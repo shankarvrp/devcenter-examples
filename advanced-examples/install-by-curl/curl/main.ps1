@@ -18,9 +18,9 @@ function Unzip
     [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
 }
 
-if($SourceURL -ne "" -and $Package -ne "" -and $Version -ne "" -and $DestinationDirectory -ne "") {
+if($SourceURL -ne "" -and $Package -ne "") {
     $SourceURL = $SourceURL.TrimEnd('/')
-    $packageFileURL = "$SourceURL/$Package-$Version.$FileExtension"
+    $packageFileURL = "$SourceURL/$Package"
     Write-Host "packageFileURL:$packageFileURL"
 
     if(!(Test-Path $DestinationDirectory)) {
