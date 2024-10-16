@@ -18,7 +18,7 @@ function Unzip
     [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
 }
 
-if($SourceURL -ne "" -and $Package -ne "") {
+if($SourceURL -ne "" -and $Package -ne "" -and $DestinationDirectory -ne "") {
     $SourceURL = $SourceURL.TrimEnd('/')
     $packageFileURL = "$SourceURL/$Package"
     Write-Host "packageFileURL:$packageFileURL"
@@ -27,7 +27,7 @@ if($SourceURL -ne "" -and $Package -ne "") {
         New-Item $DestinationDirectory -ItemType Directory
     }
 
-    $zipFile = Join-Path $DestinationDirectory "$Package-$Version.$FileExtension"
+    $zipFile = Join-Path $DestinationDirectory "$Package"
 
     if(!(${env:REPO-GET-SECRET})){
         Invoke-RestMethod $packageFileURL -OutFile $zipFile
@@ -36,7 +36,7 @@ if($SourceURL -ne "" -and $Package -ne "") {
     }
 
     if(Test-Path $zipfile){
-        $packageFolder = "$DestinationDirectory/$Package-$Version" 
+        $packageFolder = "$DestinationDirectory/$Package" 
         if(Test-Path $packageFolder) {
             Remove-Item $packageFolder -Force -Recurse
         }
@@ -49,5 +49,5 @@ if($SourceURL -ne "" -and $Package -ne "") {
         Write-Host "Cannot download the zip file: $packageFileURL to $zipFile"
     }
 } else {
-    Write-Host "SourceURL, Package, Version and DestinationDirectory are not expected. SourceURL: $SourceURL, Package: $Package, Version: $Version, DestinationDirectory: $DestinationDirectory"
+    Write-Host "SourceURL, Package, Version and DestinationDirectory are not expected. SourceURL: $SourceURL, Package: $Package, DestinationDirectory: $DestinationDirectory"
 }
