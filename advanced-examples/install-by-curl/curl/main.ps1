@@ -30,21 +30,27 @@ if($SourceURL -ne "" -and $Package -ne "" -and $DestinationDirectory -ne "") {
     $zipFile = Join-Path $DestinationDirectory "$Package"
 
     if(!(${env:REPO-GET-SECRET})){
+		 Write-Host "No Secret!"
+		 Write-Host  $packageFileURL
+		 Write-Host $zipfile
         Invoke-RestMethod $packageFileURL -OutFile $zipFile
     }else{
         Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f ${env:REPO-GET-SECRET})} $packageFileURL -OutFile $zipFile
     }
 
     if(Test-Path $zipfile){
+		 Write-Host "Zip file exists"
         $packageFolder = "$DestinationDirectory/$Package" 
-        if(Test-Path $packageFolder) {
-            Remove-Item $packageFolder -Force -Recurse
+		
+		 if($FileExtension -eq "zip"){
+            Unzip $zipFile "$DestinationDirectory" 
         }
+		
+         if(Test-Path $packageFolder) {
+             Remove-Item $packageFolder -Force -Recurse
+         }
         
-        if($FileExtension -eq "zip"){
-            Unzip $zipFile $packageFolder
-        }
-        
+       
     }else{
         Write-Host "Cannot download the zip file: $packageFileURL to $zipFile"
     }
